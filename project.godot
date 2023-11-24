@@ -12,6 +12,7 @@ config_version=5
 
 config/name="Gd Script-reactivity"
 config/features=PackedStringArray("4.2", "GL Compatibility")
+boot_splash/bg_color=Color(1, 1, 1, 1)
 config/icon="res://icon.svg"
 
 [editor_plugins]
