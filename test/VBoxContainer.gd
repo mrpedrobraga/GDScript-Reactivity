@@ -5,7 +5,7 @@ extends VBoxContainer
 func _ready():
 	Rx.render(self)
 
-var todos = ArrayContainer.new(self, VBoxContainer, [],
+var todos = Rx.each(self, VBoxContainer, [],
 	func(i, v):
 		return Rx.hbox(self,
 			[
@@ -52,4 +52,4 @@ func _render_counter():
 	]
 
 func _render():
-	return [_render_todo()]
+	return range(0, 10).map((func(_x): return _render_counter()))

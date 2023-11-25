@@ -19,7 +19,8 @@ static func _commit_content(rx_parent: Node, parent: Node, subject):
 			_commit_content(rx_parent, parent, i)
 	
 	if subject is Node:
-		rx_parent.get_meta(RX_META).content_nodes.push_back(subject)
+		if rx_parent:
+			rx_parent.get_meta(RX_META).content_nodes.push_back(subject)
 		parent.add_child(subject) if not subject.is_inside_tree() else subject.reparent(parent)
 	
 	if subject is ReactiveBound:
@@ -27,9 +28,9 @@ static func _commit_content(rx_parent: Node, parent: Node, subject):
 
 ## Cleans up the content of a reactive parent :-)
 static func _cleanup_content(rx_parent: Node, parent: Node):
-	# This here will use a better clean up!
-	var meta = rx_parent.get_meta(RX_META)
-	if meta:
+	if rx_parent.has_meta(RX_META):
+		# This here will use a better clean up!
+		var meta = rx_parent.get_meta(RX_META)
 		meta.content_nodes.map(func(c: Node):
 			var p = c.get_parent()
 			if p:
@@ -51,10 +52,12 @@ static func _ensure_has_meta(rx_parent: Node):
 static func _make(template) -> Node:
 	if template is PackedScene:
 		return template.instantiate()
+	if template is Node:
+		return template
 	return template.new()
 
 ## Creates and returns a reactive node, as well as binds it to a reactive parent.
-static func node(rx_parent: Node, template, properties: Dictionary):
+static func node(rx_parent: Node, template, properties: Dictionary = {}):
 	var meta = _ensure_has_meta(rx_parent)
 	var node = _make(template)
 
@@ -73,6 +76,26 @@ static func node(rx_parent: Node, template, properties: Dictionary):
 	)
 	
 	return node
+
+## Creates and returns a reactive node, as well as binds it to a reactive parent.
+static func with(template, properties: Dictionary = {}):
+	var node = (template)
+
+	properties.keys().map(func (key):
+		match key:
+			"on":
+				for ksignal in properties[key].keys():
+					node[ksignal].connect(properties[key][ksignal])
+				return
+			"children":
+				for child in properties[key]:
+					node.add_child(child)
+				return
+		node.set(key, properties[key])
+	)
+	
+	return node
+
 
 static func _setup_content_node_property(meta, rx_parent: Node, node: Node, key, value):
 	if value is ReactiveBound:
@@ -131,6 +154,10 @@ static func hbox(rx_parent: Node, _children: Array, properties: Dictionary = {})
 static func vbox(rx_parent: Node, _children: Array, properties: Dictionary = {}):
 	properties.children = _children
 	return Rx.node(rx_parent, HBoxContainer, properties)
+
+static func each(rx_parent: Node, node_container_template, data_container, item_recipe: Callable):
+	if data_container is Array:
+		return ArrayContainer.new(rx_parent, node_container_template, data_container, item_recipe)
 
 static func txt(rx_parent: Node, _text):
 	return Rx.node(rx_parent, Label, { text = _text })

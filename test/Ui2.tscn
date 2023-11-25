@@ -1,0 +1,26 @@
+[gd_scene load_steps=7 format=3 uid="uid://4rmxtfhfg0vy"]
+
+[ext_resource type="Script" path="res://test/GridContainer.gd" id="1_wgh6f"]
+[ext_resource type="Texture2D" uid="uid://pco0mettuw1t" path="res://test/assets/ch_andy.png" id="2_txf3t"]
+[ext_resource type="Texture2D" uid="uid://dlx1xt480nmi7" path="res://test/assets/ch_bruno.png" id="3_880cs"]
+[ext_resource type="Texture2D" uid="uid://dxwwuayaxff36" path="res://test/assets/ch_andy_hover.png" id="4_brigy"]
+[ext_resource type="Texture2D" uid="uid://bu4w5xddmc6tm" path="res://test/assets/ch_claire.png" id="5_owf71"]
+[ext_resource type="Texture2D" uid="uid://bot8uxxq3t0ar" path="res://test/assets/ch_rodrick.png" id="6_y4ovp"]
+
+[node name="Ui2" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wgh6f")
+default_images = Array[Texture]([ExtResource("2_txf3t"), ExtResource("3_880cs"), ExtResource("4_brigy"), ExtResource("5_owf71"), ExtResource("6_y4ovp")])
